@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { DesktopNavbar } from './components/layout/DesktopNavbar';
 import { AppHeader } from './components/layout/AppHeader';
+import { HomeScreen } from './components/home/HomeScreen';
 import { ShopHeroBanner } from './components/layout/ShopHeroBanner';
 import { ShopTabs, type ShopTabType } from './components/layout/ShopTabs';
 import { BottomNav, type NavTab } from './components/layout/BottomNav';
@@ -10,10 +11,10 @@ import { TopBrandsTab } from './components/tabs/TopBrandsTab';
 import { NearbyStoresTab } from './components/tabs/NearbyStoresTab';
 import { EmptyState } from './components/common/EmptyState';
 import { WhatsAppWidget } from './components/common/WhatsAppWidget';
-import { ReceiptIndianRupee, ChartNoAxesCombined, User, Home, Smartphone, Monitor } from 'lucide-react';
+import { ReceiptIndianRupee, ChartNoAxesCombined, User, Smartphone, Monitor } from 'lucide-react';
 
 export function App() {
-  const [activeNavTab, setActiveNavTab] = useState<NavTab>('shop');
+  const [activeNavTab, setActiveNavTab] = useState<NavTab>('home');
   const [activeShopTab, setActiveShopTab] = useState<ShopTabType>('marketplace');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [isMobileFrame, setIsMobileFrame] = useState<boolean>(false);
@@ -96,10 +97,10 @@ export function App() {
             : 'max-w-7xl px-4 sm:px-6 lg:px-8 py-4'
         }`}
       >
-        {/* Mobile Header (Shown only in Mobile Frame mode or when inspecting details) */}
+        {/* Mobile Header (Shown in Mobile Frame mode) */}
         {isMobileFrame && (
           <AppHeader
-            title={selectedProductId ? 'Product Details' : 'Shop'}
+            title={selectedProductId ? 'Product Details' : activeNavTab === 'home' ? '1Fi' : 'Shop'}
             showBack={!!selectedProductId}
             onBack={() => setSelectedProductId(null)}
             onTriggerSimulateError={handleTriggerSimulateError}
@@ -108,21 +109,32 @@ export function App() {
 
         {/* Dynamic Page Content */}
         <main className={`flex-1 flex flex-col ${isMobileFrame ? 'px-4 py-4 pb-28 gap-4 overflow-x-hidden' : 'gap-6 pb-20'}`}>
-          {activeNavTab === 'shop' ? (
-            /* SHOP FLOW */
+          {/* 1. HOME SCREEN: Featuring the official 1Fi Hero Section & Highlights */}
+          {activeNavTab === 'home' && (
+            <HomeScreen
+              onNavigateToShop={handleStartShopping}
+              onSelectProduct={(id) => {
+                setActiveNavTab('shop');
+                setSelectedProductId(id);
+              }}
+              isMobileFrame={isMobileFrame}
+            />
+          )}
+
+          {/* 2. SHOP SCREEN: Product Details OR Main Shop Dashboard */}
+          {activeNavTab === 'shop' && (
             <>
-              {/* Product Details View */}
               {selectedProductId ? (
                 <ProductDetails
                   productId={selectedProductId}
                   onBack={() => setSelectedProductId(null)}
                 />
               ) : (
-                /* MAIN SHOP DASHBOARD WITH 3 TABS */
                 <>
-                  {/* Hero Banner: Desktop Expansive vs Mobile Compact */}
+                  {/* Shop Banner */}
                   <ShopHeroBanner
                     isDesktop={!isMobileFrame}
+                    isShopBanner={true}
                     onStartShopping={handleStartShopping}
                     onCheckEligibility={handleCheckEligibility}
                   />
@@ -150,51 +162,50 @@ export function App() {
                 </>
               )}
             </>
-          ) : (
-            /* OTHER 1FI BOTTOM NAV TABS (PLACEHOLDERS) */
+          )}
+
+          {/* 3. EMI DUES TAB */}
+          {activeNavTab === 'emi-dues' && (
             <div className="py-16 flex flex-col items-center">
-              {activeNavTab === 'home' && (
-                <EmptyState
-                  icon={<Home className="h-8 w-8" />}
-                  title="1Fi Home Dashboard"
-                  description="Your mutual fund portfolio, available credit limit, and investment growth tracker."
-                  actionText="Explore 1Fi Marketplace"
-                  onAction={() => setActiveNavTab('shop')}
-                />
-              )}
-              {activeNavTab === 'emi-dues' && (
-                <EmptyState
-                  icon={<ReceiptIndianRupee className="h-8 w-8" />}
-                  title="No Pending Dues"
-                  description="All your 1Fi EMI repayments are on track. No upcoming installments for this month."
-                  actionText="Shop Now on EMI"
-                  onAction={() => setActiveNavTab('shop')}
-                />
-              )}
-              {activeNavTab === 'limit' && (
-                <EmptyState
-                  icon={<ChartNoAxesCombined className="h-8 w-8" />}
-                  title="Mutual Fund Credit Limit"
-                  description="Your eligible credit limit is ₹2,50,000 backed by your linked CAMS/KFintech mutual funds portfolio."
-                  actionText="Use Limit on Marketplace"
-                  onAction={() => setActiveNavTab('shop')}
-                />
-              )}
-              {activeNavTab === 'profile' && (
-                <EmptyState
-                  icon={<User className="h-8 w-8" />}
-                  title="Account Profile"
-                  description="Manage your linked bank accounts, PAN verification, and depository pledge settings."
-                  actionText="Back to Shop"
-                  onAction={() => setActiveNavTab('shop')}
-                />
-              )}
+              <EmptyState
+                icon={<ReceiptIndianRupee className="h-8 w-8" />}
+                title="No Pending Dues"
+                description="All your 1Fi EMI repayments are on track. No upcoming installments for this month."
+                actionText="Shop Now on EMI"
+                onAction={() => setActiveNavTab('shop')}
+              />
+            </div>
+          )}
+
+          {/* 4. CREDIT LIMIT TAB */}
+          {activeNavTab === 'limit' && (
+            <div className="py-16 flex flex-col items-center">
+              <EmptyState
+                icon={<ChartNoAxesCombined className="h-8 w-8" />}
+                title="Mutual Fund Credit Limit"
+                description="Your eligible credit limit is ₹2,50,000 backed by your linked CAMS/KFintech mutual funds portfolio."
+                actionText="Use Limit on Marketplace"
+                onAction={() => setActiveNavTab('shop')}
+              />
+            </div>
+          )}
+
+          {/* 5. PROFILE TAB */}
+          {activeNavTab === 'profile' && (
+            <div className="py-16 flex flex-col items-center">
+              <EmptyState
+                icon={<User className="h-8 w-8" />}
+                title="Account Profile"
+                description="Manage your linked bank accounts, PAN verification, and depository pledge settings."
+                actionText="Back to Shop"
+                onAction={() => setActiveNavTab('shop')}
+              />
             </div>
           )}
         </main>
 
-        {/* Floating Bottom Navigation Bar (For Mobile Frame or Mobile Screens) */}
-        {isMobileFrame && !selectedProductId && (
+        {/* Floating Bottom Navigation Bar (For Mobile Frame or Small Screens) */}
+        {(isMobileFrame || typeof window !== 'undefined' && window.innerWidth < 768) && !selectedProductId && (
           <BottomNav
             activeTab={activeNavTab}
             onTabChange={(tab) => {

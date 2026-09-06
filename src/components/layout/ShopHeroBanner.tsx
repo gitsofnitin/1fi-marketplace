@@ -5,18 +5,21 @@ interface ShopHeroBannerProps {
   isDesktop?: boolean;
   onCheckEligibility?: () => void;
   onStartShopping?: () => void;
+  isShopBanner?: boolean;
 }
 
 export const ShopHeroBanner: React.FC<ShopHeroBannerProps> = ({
   isDesktop = false,
   onCheckEligibility,
   onStartShopping,
+  isShopBanner = false,
 }) => {
-  if (isDesktop) {
+  // If not purely a shop banner and on desktop, render the expansive official landing hero
+  if (isDesktop && !isShopBanner) {
     return (
-      <section className="relative w-full py-12 md:py-16 px-4 flex flex-col items-center justify-center text-center">
+      <section className="relative w-full py-10 md:py-14 px-4 flex flex-col items-center justify-center text-center">
         {/* Top Pill Badge: "✦ New  No-cost EMIs backed by mutual funds" */}
-        <div className="inline-flex items-center gap-2 rounded-full bg-white/90 border border-purple-150 px-4 py-1.5 shadow-xs mb-6 backdrop-blur-md">
+        <div className="inline-flex items-center gap-2 rounded-full bg-white/95 border border-purple-150 px-4 py-1.5 shadow-xs mb-6 backdrop-blur-md">
           <span className="flex items-center gap-1 text-[11.5px] font-bold text-[#712CDC] bg-purple-50 px-2 py-0.5 rounded-full">
             <Sparkles className="h-3 w-3 fill-[#712CDC]" />
             <span>New</span>
@@ -71,44 +74,44 @@ export const ShopHeroBanner: React.FC<ShopHeroBannerProps> = ({
     );
   }
 
-  // Mobile Device Frame / Compact Banner View
+  // Shop Section Banner (Both Mobile Frame & Desktop Shop Tab)
   return (
-    <div className="relative overflow-hidden rounded-[24px] bg-gradient-to-br from-[#712CDC] via-[#8525f0] to-[#5b1ea8] p-5 text-white shadow-[0_8px_24px_rgba(113,44,220,0.18)]">
+    <div className="relative overflow-hidden rounded-[24px] bg-gradient-to-br from-[#712CDC] via-[#8525f0] to-[#5b1ea8] p-5 sm:p-7 text-white shadow-[0_8px_24px_rgba(113,44,220,0.18)]">
       {/* Background Graphic Accents */}
-      <div className="absolute -right-6 -top-6 h-36 w-36 rounded-full bg-white/10 blur-2xl pointer-events-none" />
-      <div className="absolute -left-6 -bottom-6 h-36 w-36 rounded-full bg-black/10 blur-2xl pointer-events-none" />
+      <div className="absolute -right-6 -top-6 h-40 w-40 rounded-full bg-white/10 blur-2xl pointer-events-none" />
+      <div className="absolute -left-6 -bottom-6 h-40 w-40 rounded-full bg-black/10 blur-2xl pointer-events-none" />
 
       {/* Pill Badge */}
       <div className="inline-flex items-center gap-1.5 rounded-full bg-white/20 backdrop-blur-md px-3 py-1 text-[11px] font-semibold text-white mb-3">
         <Zap className="h-3 w-3 fill-yellow-300 text-yellow-300" />
-        <span>India's 1st LAMF Shopping</span>
+        <span>India's 1st LAMF Marketplace</span>
       </div>
 
       {/* Heading matching signature copy */}
-      <h2 className="text-2xl font-extrabold tracking-tight text-white leading-tight">
+      <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
         Shop today, <br />
         <span className="italic font-normal text-purple-200 font-serif">Pay later </span>
         <span className="text-white font-bold">using </span>
         <span className="text-yellow-300 font-extrabold">mutual funds.</span>
       </h2>
 
-      <p className="mt-2 text-[12.5px] leading-snug text-purple-100 max-w-[32ch]">
-        Enjoy 0% interest EMIs while your mutual funds continue compounding and growing.
+      <p className="mt-2 text-[12.5px] sm:text-sm leading-snug text-purple-100 max-w-[45ch]">
+        Enjoy 0% interest EMIs while your mutual funds continue compounding and growing in the market.
       </p>
 
       {/* Feature Badges */}
-      <div className="mt-4 flex flex-wrap items-center gap-2 pt-2 border-t border-white/15">
-        <div className="flex items-center gap-1 text-[10.5px] font-medium text-white/90">
+      <div className="mt-4 flex flex-wrap items-center gap-2 sm:gap-3 pt-2.5 border-t border-white/15">
+        <div className="flex items-center gap-1 text-[11px] font-medium text-white/90">
           <ShieldCheck className="h-3.5 w-3.5 text-green-300" />
           <span>No CIBIL Check</span>
         </div>
         <span className="text-white/40">•</span>
-        <div className="flex items-center gap-1 text-[10.5px] font-medium text-white/90">
+        <div className="flex items-center gap-1 text-[11px] font-medium text-white/90">
           <TrendingUp className="h-3.5 w-3.5 text-purple-200" />
           <span>Retain MF Returns</span>
         </div>
         <span className="text-white/40">•</span>
-        <div className="flex items-center gap-1 text-[10.5px] font-medium text-white/90">
+        <div className="flex items-center gap-1 text-[11px] font-medium text-white/90">
           <span className="font-bold text-yellow-300">0%</span>
           <span>No-cost EMI</span>
         </div>

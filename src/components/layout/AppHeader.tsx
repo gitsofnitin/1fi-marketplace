@@ -48,7 +48,7 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
               <span className="text-base font-bold tracking-tight text-gray-900">1Fi</span>
             </div>
           )}
-          {title && (
+          {title && title !== '1Fi' && (
             <h1 className="text-[17px] font-bold tracking-[-0.015em] text-gray-900 ml-1">
               {title}
             </h1>
