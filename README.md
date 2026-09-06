@@ -6,7 +6,7 @@ A production-grade, pixel-perfect replication of the **1Fi mobile web app & desk
 
 ---
 
-## 🚀 Live Demo & Quick Start
+##  Live Demo & Quick Start
 
 ### 1. Prerequisites
 - Node.js (v18 or higher)
@@ -40,7 +40,7 @@ npm run preview
 
 ---
 
-## 📱 Feature Overview & Architecture
+## Feature Overview & Architecture
 
 ### 1. Brand Alignment with 1Fi (`1fi.in` & Mobile App)
 - **Signature 1Fi Design Tokens:** Official purple brand color (`#712CDC`), hover state (`#5b24b5`), accent gradient (`from-[#712CDC] to-[#a203d5]`), and pill container backgrounds (`#f5f0ff`).
@@ -86,7 +86,7 @@ As specified in the assignment document:
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 1Fi/
@@ -138,13 +138,13 @@ As specified in the assignment document:
 
 ---
 
-## 🧪 Evaluation Rubric Checklist
+## Evaluation Rubric Checklist
 
 | Criteria | Implementation Highlights | Status |
 | :--- | :--- | :---: |
-| **1. Product Understanding** | Replicated 1Fi's unique Loan-Against-Mutual-Funds value proposition with 0% EMI and collateral calculation. | ✅ Completed |
-| **2. UI/UX Consistency** | Exact `#712CDC` brand purple, pill tab container, card borders, floating island bottom nav, and hero banner. | ✅ Completed |
-| **3. Engineering Quality** | Modular React 19 + TypeScript, custom hooks, zero type errors (`tsc -b && vite build` exits with code 0). | ✅ Completed |
-| **4. Functionality** | End-to-end shopping flow: browse $\rightarrow$ filter $\rightarrow$ details $\rightarrow$ variant $\rightarrow$ EMI plan $\rightarrow$ proceed $\rightarrow$ order placed. | ✅ Completed |
-| **5. Data / API Handling** | Dedicated async mock API layer (`api.ts`) with promises, simulated network latency, and zero hardcoded JSX data. | ✅ Completed |
-| **6. Attention to Detail** | Skeleton loaders, error state with retry, empty state for searches, device frame toggle for evaluators. | ✅ Completed |
+| **1. Product Understanding** | Replicated 1Fi's unique Loan-Against-Mutual-Funds value proposition with 0% EMI and collateral calculation. | completed |
+| **2. UI/UX Consistency** | Exact `#712CDC` brand purple, pill tab container, card borders, floating island bottom nav, and hero banner. | Completed |
+| **3. Engineering Quality** | Modular React 19 + TypeScript, custom hooks, zero type errors (`tsc -b && vite build` exits with code 0). | Completed |
+| **4. Functionality** | End-to-end shopping flow: browse $\rightarrow$ filter $\rightarrow$ details $\rightarrow$ variant $\rightarrow$ EMI plan $\rightarrow$ proceed $\rightarrow$ order placed. |  Completed |
+| **5. Data / API Handling** | Dedicated async mock API layer (`api.ts`) with promises, simulated network latency, and zero hardcoded JSX data. | Completed |
+| **6. Attention to Detail** | Skeleton loaders, error state with retry, empty state for searches, device frame toggle for evaluators. | Completed |
