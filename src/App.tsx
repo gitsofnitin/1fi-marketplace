@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { DesktopNavbar } from './components/layout/DesktopNavbar';
 import { EvaluatorToolbar } from './components/layout/EvaluatorToolbar';
 import { AppHeader } from './components/layout/AppHeader';
@@ -21,6 +21,25 @@ export function App() {
   const [isMobileFrame, setIsMobileFrame] = useState<boolean>(false);
   const [, setRefreshKey] = useState<number>(0);
 
+  // Screen size detection for real mobile devices or F12 responsive mode
+  const [isScreenMobile, setIsScreenMobile] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsScreenMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Effective mobile mode: True if toggled via bottom toolbar OR in F12 / mobile browser
+  const isMobile = isMobileFrame || isScreenMobile;
+
   const shopSectionRef = useRef<HTMLDivElement>(null);
 
   // Trigger re-render when reviewer toggles simulated error mode
@@ -42,8 +61,8 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#faf9ff] flex flex-col items-center justify-start text-gray-900 selection:bg-purple-100 selection:text-[#712CDC]">
-      {/* Desktop Mode: Official 1Fi Floating Navbar (Identical to official 1Fi website) */}
-      {!isMobileFrame && (
+      {/* Desktop Mode: Official 1Fi Floating Navbar (Only shown on desktop viewports) */}
+      {!isMobile && (
         <DesktopNavbar
           activeNavTab={activeNavTab}
           onNavTabChange={(tab) => {
@@ -57,13 +76,15 @@ export function App() {
       {/* Main Container / Viewport */}
       <div
         className={`w-full transition-all duration-300 min-h-[calc(100vh-42px)] flex flex-col relative ${
-          isMobileFrame
+          isMobileFrame && !isScreenMobile
             ? 'max-w-[480px] my-0 sm:my-4 sm:rounded-[36px] bg-white shadow-2xl border border-gray-200/80 overflow-hidden ring-8 ring-black/5'
+            : isScreenMobile
+            ? 'max-w-[480px] w-full bg-white shadow-sm'
             : 'max-w-7xl px-4 sm:px-6 lg:px-8 py-6'
         }`}
       >
-        {/* Mobile Header (Shown in Mobile Frame mode) */}
-        {isMobileFrame && (
+        {/* Mobile Header (Shown on mobile frame or F12 / real mobile screen) */}
+        {isMobile && (
           <AppHeader
             title={selectedProductId ? 'Product Details' : activeNavTab === 'home' ? '1Fi' : 'Shop'}
             showBack={!!selectedProductId}
@@ -73,7 +94,7 @@ export function App() {
         )}
 
         {/* Dynamic Page Content */}
-        <main className={`flex-1 flex flex-col ${isMobileFrame ? 'px-4 py-4 pb-28 gap-4 overflow-x-hidden' : 'gap-8 pb-24'}`}>
+        <main className={`flex-1 flex flex-col ${isMobile ? 'px-4 py-4 pb-28 gap-4 overflow-x-hidden' : 'gap-8 pb-24'}`}>
           {/* 1. HOME SCREEN: Featuring the official 1Fi Hero Section & Highlights */}
           {activeNavTab === 'home' && (
             <HomeScreen
@@ -82,7 +103,7 @@ export function App() {
                 setActiveNavTab('shop');
                 setSelectedProductId(id);
               }}
-              isMobileFrame={isMobileFrame}
+              isMobileFrame={isMobile}
             />
           )}
 
@@ -93,24 +114,24 @@ export function App() {
                 <ProductDetails
                   productId={selectedProductId}
                   onBack={() => setSelectedProductId(null)}
-                  isMobileFrame={isMobileFrame}
+                  isMobileFrame={isMobile}
                 />
               ) : (
                 <>
                   {/* Shop Banner */}
                   <ShopHeroBanner
-                    isDesktop={!isMobileFrame}
+                    isDesktop={!isMobile}
                     isShopBanner={true}
                     onStartShopping={handleStartShopping}
                     onCheckEligibility={handleCheckEligibility}
                   />
 
                   {/* 3 Shop Tabs: Top Brands | Nearby Stores | 1Fi Marketplace */}
-                  <div ref={shopSectionRef} className={`scroll-mt-6 ${!isMobileFrame ? 'max-w-xl mx-auto w-full' : ''}`}>
+                  <div ref={shopSectionRef} className={`scroll-mt-6 ${!isMobile ? 'max-w-xl mx-auto w-full' : ''}`}>
                     <ShopTabs
                       activeTab={activeShopTab}
                       onChange={setActiveShopTab}
-                      isDesktop={!isMobileFrame}
+                      isDesktop={!isMobile}
                     />
                   </div>
 
@@ -121,7 +142,7 @@ export function App() {
                     {activeShopTab === 'marketplace' && (
                       <MarketplaceView
                         onSelectProduct={(id) => setSelectedProductId(id)}
-                        isMobileFrame={isMobileFrame}
+                        isMobileFrame={isMobile}
                       />
                     )}
                   </div>
@@ -170,8 +191,8 @@ export function App() {
           )}
         </main>
 
-        {/* Floating Bottom Navigation Bar (For Mobile Frame) */}
-        {isMobileFrame && !selectedProductId && (
+        {/* Floating Bottom Navigation Bar (For Mobile Frame or F12 / Mobile Device) */}
+        {isMobile && !selectedProductId && (
           <BottomNav
             activeTab={activeNavTab}
             onTabChange={(tab) => {
@@ -185,12 +206,14 @@ export function App() {
       {/* Floating WhatsApp Customer Support Widget (Bottom-Right) */}
       <WhatsAppWidget />
 
-      {/* Floating Evaluator Toolbar (Bottom-Left) */}
-      <EvaluatorToolbar
-        isMobileFrame={isMobileFrame}
-        onToggleMobileFrame={setIsMobileFrame}
-        onTriggerSimulateError={handleTriggerSimulateError}
-      />
+      {/* Floating Evaluator Toolbar (Shown on desktop viewports) */}
+      {!isScreenMobile && (
+        <EvaluatorToolbar
+          isMobileFrame={isMobileFrame}
+          onToggleMobileFrame={setIsMobileFrame}
+          onTriggerSimulateError={handleTriggerSimulateError}
+        />
+      )}
     </div>
   );
 }
