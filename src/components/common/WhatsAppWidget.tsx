@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
 import { MessageCircle, X, ExternalLink, ShieldCheck } from 'lucide-react';
 
-export const WhatsAppWidget: React.FC = () => {
+interface WhatsAppWidgetProps {
+  isMobile?: boolean;
+}
+
+export const WhatsAppWidget: React.FC<WhatsAppWidgetProps> = ({ isMobile }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div
+      className={`fixed z-50 flex flex-col items-end transition-all duration-200 ${
+        isMobile
+          ? 'bottom-24 right-4'
+          : 'bottom-24 right-4 md:bottom-8 md:right-8'
+      }`}
+    >
       {/* Popover Chat Card */}
       {isOpen && (
-        <div className="mb-3 w-80 rounded-2xl bg-white p-4 shadow-2xl border border-gray-150 animate-slide-up">
+        <div className="mb-3 w-80 max-w-[calc(100vw-2rem)] rounded-2xl bg-white p-4 shadow-2xl border border-gray-150 animate-slide-up">
           <div className="flex items-center justify-between border-b border-gray-100 pb-2.5">
             <div className="flex items-center gap-2">
               <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xs">

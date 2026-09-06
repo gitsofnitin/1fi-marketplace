@@ -204,7 +204,7 @@ export function App() {
       </div>
 
       {/* Floating WhatsApp Customer Support Widget (Bottom-Right) */}
-      <WhatsAppWidget />
+      <WhatsAppWidget isMobile={isMobile} />
 
       {/* Floating Evaluator Toolbar (Shown on desktop viewports) */}
       {!isScreenMobile && (
