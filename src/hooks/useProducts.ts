@@ -6,28 +6,51 @@ export function useProducts(initialCategory: ProductCategory = 'All') {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<ProductCategory>(initialCategory);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedCategory, setSelectedCategoryState] = useState<ProductCategory>(initialCategory);
+  const [searchQuery, setSearchQueryState] = useState<string>('');
+  const [reloadKey, setReloadKey] = useState<number>(0);
 
-  const loadProducts = useCallback(async () => {
+  const setSelectedCategory = useCallback((category: ProductCategory) => {
+    setSelectedCategoryState(category);
     setLoading(true);
-    setError(null);
-    try {
-      const data = await api.fetchProducts({
-        category: selectedCategory,
-        query: searchQuery,
-      });
-      setProducts(data);
-    } catch (err: any) {
-      setError(err?.message || 'Failed to load products. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  }, [selectedCategory, searchQuery]);
+  }, []);
+
+  const setSearchQuery = useCallback((query: string) => {
+    setSearchQueryState(query);
+    setLoading(true);
+  }, []);
+
+  const retry = useCallback(() => {
+    setLoading(true);
+    setReloadKey((k) => k + 1);
+  }, []);
 
   useEffect(() => {
-    loadProducts();
-  }, [loadProducts]);
+    let cancelled = false;
+
+    api.fetchProducts({
+      category: selectedCategory,
+      query: searchQuery,
+    })
+      .then((data) => {
+        if (!cancelled) {
+          setProducts(data);
+          setError(null);
+          setLoading(false);
+        }
+      })
+      .catch((err: unknown) => {
+        if (!cancelled) {
+          const message = err instanceof Error ? err.message : 'Failed to load products. Please try again.';
+          setError(message);
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedCategory, searchQuery, reloadKey]);
 
   return {
     products,
@@ -37,6 +60,6 @@ export function useProducts(initialCategory: ProductCategory = 'All') {
     setSelectedCategory,
     searchQuery,
     setSearchQuery,
-    retry: loadProducts,
+    retry,
   };
 }
