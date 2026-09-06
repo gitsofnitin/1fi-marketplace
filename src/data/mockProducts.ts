@@ -16,9 +16,9 @@ export const MOCK_PRODUCTS: Product[] = [
     badge: '0% Interest • 12 Months',
     startingEmi: 5620,
     images: [
-      'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=1000&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=1000&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=1000&auto=format&fit=crop&q=80',
     ],
     features: [
       '6.9-inch Super Retina XDR display with ProMotion up to 120Hz',
@@ -43,7 +43,7 @@ export const MOCK_PRODUCTS: Product[] = [
         price: 134900,
         originalPrice: 144900,
         inStock: true,
-        image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80',
+        image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=1000&auto=format&fit=crop&q=80',
       },
       {
         id: '16pm-512-natural',

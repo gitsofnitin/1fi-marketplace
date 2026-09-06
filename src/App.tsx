@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { DesktopNavbar } from './components/layout/DesktopNavbar';
+import { EvaluatorToolbar } from './components/layout/EvaluatorToolbar';
 import { AppHeader } from './components/layout/AppHeader';
 import { HomeScreen } from './components/home/HomeScreen';
 import { ShopHeroBanner } from './components/layout/ShopHeroBanner';
@@ -11,10 +12,10 @@ import { TopBrandsTab } from './components/tabs/TopBrandsTab';
 import { NearbyStoresTab } from './components/tabs/NearbyStoresTab';
 import { EmptyState } from './components/common/EmptyState';
 import { WhatsAppWidget } from './components/common/WhatsAppWidget';
-import { ReceiptIndianRupee, ChartNoAxesCombined, User, Smartphone, Monitor } from 'lucide-react';
+import { ReceiptIndianRupee, ChartNoAxesCombined, User } from 'lucide-react';
 
 export function App() {
-  const [activeNavTab, setActiveNavTab] = useState<NavTab>('home');
+  const [activeNavTab, setActiveNavTab] = useState<NavTab>('shop');
   const [activeShopTab, setActiveShopTab] = useState<ShopTabType>('marketplace');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [isMobileFrame, setIsMobileFrame] = useState<boolean>(false);
@@ -41,7 +42,7 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#faf9ff] flex flex-col items-center justify-start text-gray-900 selection:bg-purple-100 selection:text-[#712CDC]">
-      {/* Desktop Mode: Official 1Fi Floating Navbar */}
+      {/* Desktop Mode: Official 1Fi Floating Navbar (Identical to official 1Fi website) */}
       {!isMobileFrame && (
         <DesktopNavbar
           activeNavTab={activeNavTab}
@@ -49,44 +50,8 @@ export function App() {
             setActiveNavTab(tab);
             setSelectedProductId(null);
           }}
-          isMobileFrame={isMobileFrame}
-          onToggleMobileFrame={setIsMobileFrame}
-          onTriggerSimulateError={handleTriggerSimulateError}
           onOpenCalculator={handleCheckEligibility}
         />
-      )}
-
-      {/* Mobile Frame Mode: Evaluator Switcher Strip */}
-      {isMobileFrame && (
-        <div className="w-full bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between text-xs text-gray-500 shadow-xs z-50">
-          <div className="flex items-center gap-2">
-            <span className="font-extrabold text-[#712CDC]">1Fi SDE Assignment</span>
-            <span className="hidden sm:inline text-gray-300">|</span>
-            <span className="hidden sm:inline font-medium text-gray-600">
-              Marketplace Feature & LAMF EMIs
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] text-gray-400 font-medium">Device View:</span>
-            <button
-              type="button"
-              onClick={() => setIsMobileFrame(true)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#712CDC] text-white shadow-xs transition-all"
-            >
-              <Smartphone className="h-3 w-3" />
-              <span>Mobile (1Fi App)</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsMobileFrame(false)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all"
-            >
-              <Monitor className="h-3 w-3" />
-              <span>Responsive Full</span>
-            </button>
-          </div>
-        </div>
       )}
 
       {/* Main Container / Viewport */}
@@ -94,7 +59,7 @@ export function App() {
         className={`w-full transition-all duration-300 min-h-[calc(100vh-42px)] flex flex-col relative ${
           isMobileFrame
             ? 'max-w-[480px] my-0 sm:my-4 sm:rounded-[36px] bg-white shadow-2xl border border-gray-200/80 overflow-hidden ring-8 ring-black/5'
-            : 'max-w-7xl px-4 sm:px-6 lg:px-8 py-4'
+            : 'max-w-7xl px-4 sm:px-6 lg:px-8 py-6'
         }`}
       >
         {/* Mobile Header (Shown in Mobile Frame mode) */}
@@ -108,7 +73,7 @@ export function App() {
         )}
 
         {/* Dynamic Page Content */}
-        <main className={`flex-1 flex flex-col ${isMobileFrame ? 'px-4 py-4 pb-28 gap-4 overflow-x-hidden' : 'gap-6 pb-20'}`}>
+        <main className={`flex-1 flex flex-col ${isMobileFrame ? 'px-4 py-4 pb-28 gap-4 overflow-x-hidden' : 'gap-8 pb-24'}`}>
           {/* 1. HOME SCREEN: Featuring the official 1Fi Hero Section & Highlights */}
           {activeNavTab === 'home' && (
             <HomeScreen
@@ -204,8 +169,8 @@ export function App() {
           )}
         </main>
 
-        {/* Floating Bottom Navigation Bar (For Mobile Frame or Small Screens) */}
-        {(isMobileFrame || typeof window !== 'undefined' && window.innerWidth < 768) && !selectedProductId && (
+        {/* Floating Bottom Navigation Bar (For Mobile Frame) */}
+        {isMobileFrame && !selectedProductId && (
           <BottomNav
             activeTab={activeNavTab}
             onTabChange={(tab) => {
@@ -216,8 +181,15 @@ export function App() {
         )}
       </div>
 
-      {/* Floating WhatsApp Customer Support Widget */}
+      {/* Floating WhatsApp Customer Support Widget (Bottom-Right) */}
       <WhatsAppWidget />
+
+      {/* Floating Evaluator Toolbar (Bottom-Left) */}
+      <EvaluatorToolbar
+        isMobileFrame={isMobileFrame}
+        onToggleMobileFrame={setIsMobileFrame}
+        onTriggerSimulateError={handleTriggerSimulateError}
+      />
     </div>
   );
 }
