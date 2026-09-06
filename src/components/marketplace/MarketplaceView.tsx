@@ -10,9 +10,13 @@ import { Search, Sparkles } from 'lucide-react';
 
 interface MarketplaceViewProps {
   onSelectProduct: (productId: string) => void;
+  isMobileFrame?: boolean;
 }
 
-export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onSelectProduct }) => {
+export const MarketplaceView: React.FC<MarketplaceViewProps> = ({
+  onSelectProduct,
+  isMobileFrame = false,
+}) => {
   const {
     products,
     loading,
@@ -60,7 +64,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onSelectProduc
 
       {/* Dynamic Content States */}
       {loading ? (
-        <SkeletonLoader count={4} />
+        <SkeletonLoader count={6} isMobileFrame={isMobileFrame} />
       ) : error ? (
         <ErrorCard message={error} onRetry={retry} />
       ) : products.length === 0 ? (
@@ -72,7 +76,7 @@ export const MarketplaceView: React.FC<MarketplaceViewProps> = ({ onSelectProduc
           onAction={() => setSearchQuery('')}
         />
       ) : (
-        <div className="grid grid-cols-1 gap-3">
+        <div className={isMobileFrame ? 'grid grid-cols-2 gap-3' : 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4'}>
           {products.map((product) => (
             <ProductCard
               key={product.id}

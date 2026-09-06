@@ -111,6 +111,7 @@ export function App() {
                     {activeShopTab === 'marketplace' && (
                       <MarketplaceView
                         onSelectProduct={(id) => setSelectedProductId(id)}
+                        isMobileFrame={isMobileFrame}
                       />
                     )}
                   </div>
