@@ -93,6 +93,7 @@ export function App() {
                 <ProductDetails
                   productId={selectedProductId}
                   onBack={() => setSelectedProductId(null)}
+                  isMobileFrame={isMobileFrame}
                 />
               ) : (
                 <>

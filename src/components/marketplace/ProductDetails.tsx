@@ -19,9 +19,14 @@ import {
 interface ProductDetailsProps {
   productId: string;
   onBack: () => void;
+  isMobileFrame?: boolean;
 }
 
-export const ProductDetails: React.FC<ProductDetailsProps> = ({ productId, onBack }) => {
+export const ProductDetails: React.FC<ProductDetailsProps> = ({
+  productId,
+  onBack,
+  isMobileFrame = false,
+}) => {
   const {
     product,
     selectedVariant,
@@ -41,15 +46,17 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ productId, onBac
   if (loading) {
     return (
       <div className="p-4 sm:p-8 space-y-6">
-        <button
-          type="button"
-          onClick={onBack}
-          className="flex items-center gap-2 text-sm font-bold text-[#712CDC]"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Back to Marketplace</span>
-        </button>
-        <SkeletonLoader count={4} />
+        {!isMobileFrame && (
+          <button
+            type="button"
+            onClick={onBack}
+            className="flex items-center gap-2 text-sm font-bold text-[#712CDC]"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>Back to Marketplace</span>
+          </button>
+        )}
+        <SkeletonLoader count={4} isMobileFrame={isMobileFrame} />
       </div>
     );
   }
@@ -57,14 +64,16 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ productId, onBac
   if (error || !product || !selectedVariant) {
     return (
       <div className="p-4 sm:p-8 space-y-6">
-        <button
-          type="button"
-          onClick={onBack}
-          className="flex items-center gap-2 text-sm font-bold text-[#712CDC]"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Back to Marketplace</span>
-        </button>
+        {!isMobileFrame && (
+          <button
+            type="button"
+            onClick={onBack}
+            className="flex items-center gap-2 text-sm font-bold text-[#712CDC]"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>Back to Marketplace</span>
+          </button>
+        )}
         <ErrorCard message={error || 'Product not found'} onRetry={retry} />
       </div>
     );
@@ -93,28 +102,46 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ productId, onBac
 
   return (
     <div className="relative pb-28 sm:pb-32">
-      {/* Top Header / Back Navigation */}
-      <div className="flex items-center justify-between py-3 border-b border-gray-200/80 mb-6">
-        <button
-          type="button"
-          onClick={onBack}
-          className="flex items-center gap-2 text-sm font-bold text-gray-700 hover:text-[#712CDC] transition-colors py-1.5 px-3 rounded-xl hover:bg-gray-100 active:scale-95"
+      {/* Top Header / Back Navigation (Only shown in desktop full view; mobile frame has AppHeader) */}
+      {!isMobileFrame && (
+        <div className="flex items-center justify-between py-3 border-b border-gray-200/80 mb-6">
+          <button
+            type="button"
+            onClick={onBack}
+            className="flex items-center gap-2 text-sm font-bold text-gray-700 hover:text-[#712CDC] transition-colors py-1.5 px-3 rounded-xl hover:bg-gray-100 active:scale-95"
+          >
+            <ArrowLeft className="h-4 w-4 stroke-[2.5]" />
+            <span>Back to Marketplace</span>
+          </button>
+
+          <span className="text-xs sm:text-sm font-bold text-[#712CDC] bg-purple-50 border border-purple-100 px-3 py-1 rounded-full uppercase tracking-wider">
+            {product.category}
+          </span>
+        </div>
+      )}
+
+      {/* Main Layout: Responsive 2-column on desktop, single-column stacked in mobile frame */}
+      <div
+        className={
+          isMobileFrame
+            ? 'flex flex-col gap-6 w-full'
+            : 'grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start'
+        }
+      >
+        {/* Left Column / Showcase Stage */}
+        <div
+          className={
+            isMobileFrame
+              ? 'flex flex-col gap-4 w-full'
+              : 'lg:col-span-6 flex flex-col gap-4 lg:sticky lg:top-24'
+          }
         >
-          <ArrowLeft className="h-4 w-4 stroke-[2.5]" />
-          <span>Back to Marketplace</span>
-        </button>
-
-        <span className="text-xs sm:text-sm font-bold text-[#712CDC] bg-purple-50 border border-purple-100 px-3 py-1 rounded-full uppercase tracking-wider">
-          {product.category}
-        </span>
-      </div>
-
-      {/* Main Split Layout: Left Column (Large Image Stage) | Right Column (Product Details & EMI Flow) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        {/* Left Column: Big Product Showcase Stage & Thumbnails */}
-        <div className="lg:col-span-6 flex flex-col gap-4 lg:sticky lg:top-24">
-          {/* Main Big Stage */}
-          <div className="relative h-80 sm:h-96 lg:h-[500px] w-full flex items-center justify-center rounded-3xl bg-gradient-to-b from-gray-50/90 via-white to-purple-50/30 p-6 sm:p-10 border border-gray-200/80 shadow-xs overflow-hidden group">
+          {/* Main Stage Image */}
+          <div
+            className={`relative ${
+              isMobileFrame ? 'h-72 sm:h-80' : 'h-80 sm:h-96 lg:h-[500px]'
+            } w-full flex items-center justify-center rounded-3xl bg-gradient-to-b from-gray-50/90 via-white to-purple-50/30 p-6 sm:p-10 border border-gray-200/80 shadow-xs overflow-hidden group`}
+          >
             <img
               src={currentDisplayImage}
               alt={product.name}
@@ -177,7 +204,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ productId, onBac
         </div>
 
         {/* Right Column: Title, Pricing, Variant Selection, and EMI Plans */}
-        <div className="lg:col-span-6 flex flex-col gap-6">
+        <div className={isMobileFrame ? 'flex flex-col gap-6 w-full' : 'lg:col-span-6 flex flex-col gap-6'}>
           {/* Header Info */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
@@ -191,7 +218,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ productId, onBac
               </div>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-gray-950 leading-tight">
+            <h1 className={`${isMobileFrame ? 'text-2xl' : 'text-2xl sm:text-3xl lg:text-4xl'} font-black tracking-tight text-gray-950 leading-tight`}>
               {product.name}
             </h1>
 
@@ -204,7 +231,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ productId, onBac
 
           {/* Big Price Card */}
           <div className="flex flex-wrap items-baseline gap-3 rounded-2xl bg-gradient-to-r from-purple-50/80 via-white to-purple-50/20 p-4 sm:p-5 border border-purple-150 shadow-xs">
-            <span className="text-3xl sm:text-4xl font-black text-gray-950 tracking-tight">
+            <span className={`${isMobileFrame ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'} font-black text-gray-950 tracking-tight`}>
               {formattedPrice}
             </span>
             {formattedOriginalPrice && (
@@ -271,8 +298,20 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ productId, onBac
       </div>
 
       {/* Sticky Bottom Action Bar with EMI summary and Proceed CTA */}
-      <div className="fixed inset-x-0 bottom-0 z-40 bg-white/95 backdrop-blur-md border-t border-gray-200/80 p-3 sm:p-4 shadow-[0_-4px_24px_rgba(20,14,50,0.08)]">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      <div
+        className={
+          isMobileFrame
+            ? 'fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-white/95 backdrop-blur-md border-t border-gray-200/80 p-3 shadow-[0_-4px_24px_rgba(20,14,50,0.08)]'
+            : 'fixed inset-x-0 bottom-0 z-40 bg-white/95 backdrop-blur-md border-t border-gray-200/80 p-3 sm:p-4 shadow-[0_-4px_24px_rgba(20,14,50,0.08)]'
+        }
+      >
+        <div
+          className={
+            isMobileFrame
+              ? 'flex items-center justify-between gap-3 px-1'
+              : 'max-w-7xl mx-auto flex items-center justify-between gap-4'
+          }
+        >
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
               <span className="text-xs text-gray-500 font-semibold">Selected EMI:</span>
@@ -298,10 +337,12 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ productId, onBac
             type="button"
             onClick={() => setShowOrderSheet(true)}
             disabled={!selectedEmiPlan}
-            className="flex items-center gap-2 rounded-2xl bg-[#712CDC] px-6 sm:px-10 py-3.5 text-sm sm:text-base font-extrabold text-white shadow-lg shadow-purple-600/25 hover:bg-[#5b1ea8] active:scale-95 transition-all disabled:opacity-50"
+            className={`flex items-center gap-2 rounded-2xl bg-[#712CDC] ${
+              isMobileFrame ? 'px-4 py-2.5 text-xs sm:text-sm' : 'px-6 sm:px-10 py-3.5 text-sm sm:text-base'
+            } font-extrabold text-white shadow-lg shadow-purple-600/25 hover:bg-[#5b1ea8] active:scale-95 transition-all disabled:opacity-50`}
           >
             <span>Proceed with EMI</span>
-            <ArrowUpRight className="h-5 w-5 stroke-[2.5]" />
+            <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5 stroke-[2.5]" />
           </button>
         </div>
       </div>
