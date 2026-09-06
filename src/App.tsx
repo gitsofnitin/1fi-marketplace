@@ -25,50 +25,56 @@ export function App() {
   return (
     <div className="min-h-screen bg-neutral-100 flex flex-col items-center justify-start text-gray-900 selection:bg-purple-100 selection:text-[#712CDC]">
       {/* Top Device / Viewport Switcher for Evaluators */}
-      <div className="w-full bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between text-xs text-gray-500 shadow-xs z-50">
-        <div className="flex items-center gap-2">
-          <span className="font-extrabold text-[#712CDC]">1Fi SDE Assignment</span>
+      <header className="w-full bg-white/95 backdrop-blur-md border-b border-gray-200 px-4 sm:px-8 py-2.5 flex items-center justify-between text-xs text-gray-500 shadow-xs z-50 sticky top-0">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#712CDC] text-white font-black text-xs">
+            1Fi
+          </div>
+          <span className="font-extrabold text-[#712CDC] text-sm tracking-tight">1Fi Marketplace</span>
           <span className="hidden sm:inline text-gray-300">|</span>
           <span className="hidden sm:inline font-medium text-gray-600">
-            Marketplace Feature & LAMF EMIs
+            SDE Assignment Submission by Nitin Kumar
           </span>
         </div>
 
+        {/* Viewport Toggle */}
         <div className="flex items-center gap-2">
-          <span className="text-[11px] text-gray-400 font-medium">Device View:</span>
-          <button
-            type="button"
-            onClick={() => setIsMobileFrame(true)}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all ${
-              isMobileFrame
-                ? 'bg-[#712CDC] text-white shadow-xs'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            <Smartphone className="h-3 w-3" />
-            <span>Mobile (1Fi App)</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setIsMobileFrame(false)}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all ${
-              !isMobileFrame
-                ? 'bg-[#712CDC] text-white shadow-xs'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            <Monitor className="h-3 w-3" />
-            <span>Responsive Full</span>
-          </button>
+          <span className="text-[11px] text-gray-400 font-medium hidden sm:inline">View Mode:</span>
+          <div className="flex items-center bg-gray-100 p-0.5 rounded-lg border border-gray-200">
+            <button
+              type="button"
+              onClick={() => setIsMobileFrame(true)}
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-[11.5px] font-semibold transition-all cursor-pointer ${
+                isMobileFrame
+                  ? 'bg-[#712CDC] text-white shadow-xs'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <Smartphone className="h-3.5 w-3.5" />
+              <span>Mobile Frame</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsMobileFrame(false)}
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-[11.5px] font-semibold transition-all cursor-pointer ${
+                !isMobileFrame
+                  ? 'bg-[#712CDC] text-white shadow-xs'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <Monitor className="h-3.5 w-3.5" />
+              <span>Desktop Full</span>
+            </button>
+          </div>
         </div>
-      </div>
+      </header>
 
       {/* Main Container / Mobile Device Simulator Frame */}
       <div
-        className={`w-full transition-all duration-300 min-h-[calc(100vh-42px)] bg-white flex flex-col relative ${
+        className={`w-full transition-all duration-300 min-h-[calc(100vh-50px)] bg-white flex flex-col relative ${
           isMobileFrame
-            ? 'max-w-[480px] my-0 sm:my-4 sm:rounded-[36px] shadow-2xl border border-gray-200/80 overflow-hidden ring-8 ring-black/5'
-            : 'max-w-4xl shadow-sm border-x border-gray-200'
+            ? 'max-w-[480px] my-0 sm:my-5 sm:rounded-[36px] shadow-2xl border border-gray-200/90 overflow-hidden ring-8 ring-black/5'
+            : 'max-w-6xl my-0 sm:my-6 sm:rounded-3xl shadow-xl border border-gray-200/80 overflow-hidden'
         }`}
       >
         {/* App Header */}
@@ -80,11 +86,15 @@ export function App() {
         />
 
         {/* Dynamic Page Content */}
-        <main className="flex-1 flex flex-col px-4 py-4 pb-28 gap-4 overflow-x-hidden">
+        <main
+          className={`flex-1 flex flex-col pb-28 gap-5 overflow-x-hidden ${
+            isMobileFrame ? 'px-4 py-4' : 'px-4 sm:px-8 py-6'
+          }`}
+        >
           {activeNavTab === 'shop' ? (
             /* SHOP FLOW */
             <>
-              {/* If on product details view, render product details */}
+              {/* If on product details view, render responsive product details */}
               {selectedProductId ? (
                 <ProductDetails
                   productId={selectedProductId}
@@ -97,7 +107,7 @@ export function App() {
                   <ShopHeroBanner />
 
                   {/* 3 Shop Tabs: Top Brands | Nearby Stores | 1Fi Marketplace */}
-                  <div className="mt-1">
+                  <div className={`mt-1 ${!isMobileFrame ? 'max-w-md mx-auto w-full' : ''}`}>
                     <ShopTabs
                       activeTab={activeShopTab}
                       onChange={setActiveShopTab}
@@ -119,7 +129,7 @@ export function App() {
             </>
           ) : (
             /* OTHER 1FI BOTTOM NAV TABS (PLACEHOLDERS) */
-            <div className="py-12 flex flex-col items-center">
+            <div className="py-16 flex flex-col items-center">
               {activeNavTab === 'home' && (
                 <EmptyState
                   icon={<Home className="h-7 w-7" />}
@@ -160,7 +170,7 @@ export function App() {
           )}
         </main>
 
-        {/* Floating Bottom Navigation Bar (Hidden when reviewing order details to maximize viewport) */}
+        {/* Floating Bottom Navigation Bar (Hidden on Product details to maximize view) */}
         {!selectedProductId && (
           <BottomNav
             activeTab={activeNavTab}
