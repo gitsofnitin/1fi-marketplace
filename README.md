@@ -16,8 +16,8 @@ An authentic, pixel-perfect replication of the **1Fi mobile web app** extending 
 ### 2. Run Locally
 ```bash
 # Clone the repository
-git clone <your-repo-link>
-cd 1Fi
+git clone https://github.com/gitsofnitin/1fi-marketplace.git
+cd 1fi-marketplace
 
 # Install dependencies
 npm install
